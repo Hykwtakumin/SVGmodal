@@ -1,0 +1,39 @@
+{
+  "name": "SVGmodal",
+  "version": "0.0.1",
+  "description": "browser extension that improves SVG usage",
+  "icons": {
+    "128": "icons/bigicon.png"
+  },
+  "browser_action": {
+  },
+  "permissions": [
+    "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://scrapbox.io/*"
+      ],
+      "css": [
+        "styles/content.css"
+      ],
+      "js": [
+        "scripts/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "script": "background.js"
+  },
+  "options_page": "pages/option.html",
+  "options_ui": {
+    "page": "pages/option.html",
+    "open_in_tab": true
+  },
+  "web_accessible_resources": [
+    "/icons/bigicon.png"
+  ],
+  "manifest_version": 2
+}
