@@ -8,7 +8,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     if (msg.tag === "getImg") {
         const request = await fetch(msg.body.url as string, {method: 'GET', mode: 'cors'});
         const svg = await request.text();
-        console.dir(await svg);
         const response = {
             tag: "insertSVG",
             body: svg

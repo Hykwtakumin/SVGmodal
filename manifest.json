@@ -1,9 +1,9 @@
 {
   "name": "SVGmodal",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "browser extension that improves SVG usage",
   "icons": {
-    "128": "icons/bigicon.png"
+    "128": "icons/resizedImage.png"
   },
   "browser_action": {
   },
@@ -36,7 +36,7 @@
     "open_in_tab": true
   },
   "web_accessible_resources": [
-    "/icons/bigicon.png"
+    "/icons/resizedImage.png"
   ],
   "manifest_version": 2
 }
