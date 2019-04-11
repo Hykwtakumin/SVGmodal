@@ -28,7 +28,7 @@
   "background": {
     "page": "pages/background.html",
     "script": "scripts/background.js",
-    "persistent": true
+    "persistent": false
   },
   "options_page": "pages/option.html",
   "options_ui": {
