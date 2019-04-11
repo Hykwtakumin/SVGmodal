@@ -8,7 +8,8 @@
   "browser_action": {
   },
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "tabs"
   ],
   "content_scripts": [
     {
@@ -25,7 +26,9 @@
     }
   ],
   "background": {
-    "script": "background.js"
+    "page": "pages/background.html",
+    "script": "scripts/background.js",
+    "persistent": true
   },
   "options_page": "pages/option.html",
   "options_ui": {
