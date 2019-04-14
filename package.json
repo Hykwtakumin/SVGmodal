@@ -12,6 +12,7 @@
     "browserify-cs": "browserify ./dist/scripts/content.js -o ./dist/scripts/content.js",
     "browserify-op": "browserify ./dist/scripts/option.js -o ./dist/scripts/option.js",
     "browserify": "npm run browserify-bg && npm run browserify-cs && npm run browserify-op",
+    "android": "web-ext run --source-dir ./dist --target=firefox-android --android-device=******** --firefox-apk=org.mozilla.fennec_aurora",
     "test": "tslint '/src/scripts/*.ts'"
   },
   "main": "index.js",
@@ -22,6 +23,8 @@
     "browserify": "^16.2.3",
     "chrome-promise": "^3.0.4",
     "debug": "^4.1.1",
-    "typescript": "^3.4.2"
+    "typescript": "^3.4.2",
+    "web-ext": "^3.0.0",
+    "web-ext-types": "^3.1.0"
   }
 }
