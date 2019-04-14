@@ -12,7 +12,7 @@
     "browserify-cs": "browserify ./dist/scripts/content.js -o ./dist/scripts/content.js",
     "browserify-op": "browserify ./dist/scripts/option.js -o ./dist/scripts/option.js",
     "browserify": "npm run browserify-bg && npm run browserify-cs && npm run browserify-op",
-    "android": "web-ext run --source-dir ./dist --target=firefox-android --android-device=******** --firefox-apk=org.mozilla.fennec_aurora",
+    "android": "web-ext run --source-dir ./dist --target=firefox-android --android-device=$DEVICE_ID --firefox-apk=org.mozilla.fennec_aurora",
     "test": "tslint '/src/scripts/*.ts'"
   },
   "main": "index.js",
