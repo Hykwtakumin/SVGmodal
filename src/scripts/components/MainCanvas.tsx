@@ -1,10 +1,11 @@
 import * as React from "react";
 import { useState, useRef, useEffect, FC } from "react";
 import * as ReactDOM from "react-dom";
-import { Points, getPoint } from "./utils";
+import { Points, getPoint, TitleImageMap } from "./utils";
 import {
   addPath,
   updatePath,
+  addLusterImage,
   setPointerEventsEnableToAllPath,
   setPointerEventsDisableToAllPath
 } from "./PathDrawer";
@@ -18,13 +19,14 @@ interface MainCanvasProps {
   vbTop: number;
   vbRight: number;
   vbBottom: number;
+  imageMap: TitleImageMap[];
 }
 
 export const MainCanvas = (
   props: MainCanvasProps
 ): React.FC<{ MainCanvasProps }> => {
   // Declare a new state variable, which we'll call "count"
-  const { vbLeft, vbTop, vbRight, vbBottom } = props;
+  const { vbLeft, vbTop, vbRight, vbBottom, imageMap } = props;
   const [lastpath, setLastPath] = useState({ null: SVGElement });
   const [penWidth, setPenWidth] = useState(6);
   const [color, setColor] = useState("#585858");
@@ -71,7 +73,6 @@ export const MainCanvas = (
     lastPath.setAttribute("stroke", color);
     lastPath.setAttribute("stroke-width", `${penWidth}`);
     lastPath.classList.add("current-path");
-    console.dir(lastPath);
   };
 
   const handleMove = (event: React.SyntheticEvent<HTMLElement>) => {
@@ -81,7 +82,6 @@ export const MainCanvas = (
         const canvas = svgCanvas.current;
         const point: Points = getPoint(event.pageX, event.pageY, canvas);
         updatePath(lastPath, point);
-        console.dir(lastPath);
       } else {
         console.log("something went wrong");
       }
@@ -95,6 +95,13 @@ export const MainCanvas = (
     lastPath = null;
   };
 
+  const handleImportImage = (importMap: TitleImageMap) => {
+    setEditorMode("edit");
+    const canvas = svgCanvas.current;
+    const importedImage = addLusterImage(canvas, importMap);
+    console.dir(importedImage);
+  };
+
   return (
     <React.Fragment>
       <div className={"rootContainer"}>
@@ -102,7 +109,11 @@ export const MainCanvas = (
           <PenWidthSelector widthChange={onWidthChange} />
           <ColorPicker colorChange={onColorChange} />
           <ModeSelector modeChange={onModeChange} />
-          <ImportPotal modalSubmit={console.log} />
+          <ImportPotal
+            modalSubmit={console.log}
+            imageMap={imageMap}
+            importImage={handleImportImage}
+          />
 
           <span>100%</span>
           <input

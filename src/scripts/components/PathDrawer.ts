@@ -1,4 +1,4 @@
-import { Points } from "./utils";
+import { Points, TitleImageMap } from "./utils";
 
 export const addPath = (canvas: SVGElement, point: Points): SVGPathElement => {
   const pathElm: SVGPathElement = document.createElementNS(
@@ -18,6 +18,31 @@ export const updatePath = (path: SVGPathElement, point: Points) => {
   const movement = ` L ${point.x} ${point.y}`;
   pointsArray += movement;
   path.setAttribute("d", pointsArray);
+};
+
+export const addLusterImage = (
+  canvas: SVGElement,
+  importMap: TitleImageMap
+): SVGElement => {
+  const ankerElm: SVGAElement = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "a"
+  );
+
+  ankerElm.setAttribute("xlink:href", importMap.title);
+
+  const imageElm: SVGImageElement = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "image"
+  );
+  imageElm.setAttribute(
+    "xlink:href",
+    `https://i.gyazo.com/ab1ceef55ecbe59145dcb58bd5acdfd8.jpg`
+  );
+
+  ankerElm.appendChild(imageElm);
+  canvas.appendChild(ankerElm);
+  return ankerElm;
 };
 
 export const setPointerEventsEnableToAllPath = (canvas: SVGElement) => {

@@ -1,4 +1,6 @@
 import { openCanvas, closeCanvas } from "./components/openCanvas";
+import { getPagesWithImage } from "./components/UseScrapbox";
+import { TitleImageMap } from "./components/utils";
 
 window.onload = async () => {
   console.log("content script");
@@ -42,9 +44,15 @@ window.onload = async () => {
   const observeOption = { childList: true };
   observer.observe(document.body, observeOption);
 
+  const pageList = await getPagesWithImage();
+  const imageMap: TitleImageMap[] = pageList.map(page => {
+    return { title: page.title, image: page.image } as TitleImageMap;
+  });
+  console.dir(imageMap);
+
   const startDrawing = () => {
     /*reactDOMを追加する*/
-    openCanvas();
+    openCanvas(imageMap);
   };
   const stopDrawing = () => {
     /*reactDOMを削除する*/

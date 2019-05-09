@@ -17,6 +17,11 @@ export const getPoint = (
   return { x, y };
 };
 
+export type TitleImageMap = {
+  title: string;
+  image: string;
+};
+
 export type EditorMode = "draw" | "edit";
 
 export type OpeType =

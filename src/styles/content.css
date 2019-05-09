@@ -46,7 +46,7 @@
 .modalImageList {
   width: 90%;
   height: 70%;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .modalButtons {
@@ -85,4 +85,23 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.imageGridContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
+.imageGridItems {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.imageGridItemDiv {
+  text-align: center;
+  width: 100px;
+  height: 100px;
 }

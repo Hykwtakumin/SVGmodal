@@ -1,16 +1,13 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { MainCanvas } from "./MainCanvas";
+import { TitleImageMap } from "./utils";
 
 /*Activeなタブにだけ表示するにはどうすれば良い?*/
-/*dialog要素を表示してからReactDOMをrenderする方式に変更*/
-export const openCanvas = () => {
+/*dialog要素を表示してからReactDOMをrenderする*/
+export const openCanvas = (imageMap: TitleImageMap[]) => {
   const rootDialog: HTMLDialogElement = document.createElement("dialog");
   rootDialog.id = "rootDialog";
-
-  // const canvasRoot: HTMLDivElement = document.createElement("div");
-  // canvasRoot.id = "canvasRoot";
-  // rootDialog.appendChild(canvasRoot);
 
   document.body.appendChild(rootDialog);
   rootDialog.showModal();
@@ -19,7 +16,13 @@ export const openCanvas = () => {
   const right = rootDialog.offsetWidth;
   const bottom = rootDialog.offsetHeight;
   ReactDOM.render(
-    <MainCanvas vbLeft={0} vbTop={0} vbRight={right} vbBottom={bottom} />,
+    <MainCanvas
+      vbLeft={0}
+      vbTop={0}
+      vbRight={right}
+      vbBottom={bottom}
+      imageMap={imageMap}
+    />,
     rootDialog
   );
 };
