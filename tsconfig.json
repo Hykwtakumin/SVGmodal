@@ -1,28 +1,14 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es5",
+    "target": "es6",
     "sourceMap": true,
     "allowJs": true,
     "outDir": "dist/scripts",
     "jsx": "react",
-    "lib": [
-      "es2018",
-      "es2017",
-      "es2016",
-      "es2015",
-      "dom"
-    ],
-    "typeRoots": [
-      "node_modules/@types",
-      "node_modules/web-ext-types"
-    ]
+    "lib": ["es2018", "es2017", "es2016", "es2015", "dom"],
+    "typeRoots": ["node_modules/@types", "node_modules/web-ext-types"]
   },
-  "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "src/scripts/*.ts",
-    "src/scripts/*.tsx"
-  ]
+  "exclude": ["node_modules"],
+  "include": ["src/scripts/*.ts", "src/scripts/*.tsx"]
 }
