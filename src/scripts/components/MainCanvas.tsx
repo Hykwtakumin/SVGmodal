@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState, useRef, useEffect, FC } from "react";
 import * as ReactDOM from "react-dom";
-import { Points, getPoint, TitleImageMap } from "./utils";
+import { Points, getPoint, TitleImageMap, getBase64 } from "./utils";
 import {
   addPath,
   updatePath,
@@ -95,11 +95,28 @@ export const MainCanvas = (
     lastPath = null;
   };
 
-  const handleImportImage = (importMap: TitleImageMap) => {
+  const handleImportImage = async (importMap: TitleImageMap) => {
     setEditorMode("edit");
     const canvas = svgCanvas.current;
+    //const image = await getBase64(importMap.image);
     const importedImage = addLusterImage(canvas, importMap);
     console.dir(importedImage);
+  };
+
+  const download = () => {
+    const fileName = "hyperillust.svg";
+
+    const blobObject: Blob = new Blob(
+      [new XMLSerializer().serializeToString(svgCanvas.current)],
+      { type: "image/svg+xml;charset=utf-8" }
+    );
+    const dlUrl = window.URL.createObjectURL(blobObject);
+    const dlLink = document.createElement("a");
+    document.body.appendChild(dlLink);
+    dlLink.setAttribute("href", dlUrl);
+    dlLink.setAttribute("target", "_blank");
+    dlLink.setAttribute("download", fileName);
+    dlLink.click();
   };
 
   return (
@@ -120,6 +137,7 @@ export const MainCanvas = (
             type={"button"}
             value={"Upload"}
             className={"hicButton toolButton leftButton"}
+            onPointerDown={download}
           />
         </div>
 

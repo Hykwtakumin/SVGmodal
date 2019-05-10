@@ -29,18 +29,24 @@ export const addLusterImage = (
     "a"
   );
 
-  ankerElm.setAttribute("xlink:href", importMap.title);
+  ankerElm.setAttribute("xlink:href", `./${importMap.title}`);
 
-  const imageElm: SVGImageElement = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "image"
+  const foreign = document.createElementNS(
+    "http://www.w3.org/1999/xhtml",
+    "foreignObject"
   );
-  imageElm.setAttribute(
-    "xlink:href",
-    `https://i.gyazo.com/ab1ceef55ecbe59145dcb58bd5acdfd8.jpg`
-  );
+  foreign.setAttribute("width", "180");
+  foreign.setAttribute("height", "180");
 
-  ankerElm.appendChild(imageElm);
+  const div = document.createElement("div");
+  div.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+
+  const img = document.createElement("img");
+  img.src = importMap.image;
+  div.appendChild(img);
+  foreign.appendChild(div);
+
+  ankerElm.appendChild(foreign);
   canvas.appendChild(ankerElm);
   return ankerElm;
 };

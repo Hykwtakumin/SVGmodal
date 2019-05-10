@@ -57,5 +57,24 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     const activeTab = (await chromep.tabs.query({ active: true })) as Tab[];
     const targetId = activeTab[0].id;
     chrome.tabs.sendMessage(targetId, response);
+  } else if (msg.tag === "getImg64") {
+    /*取得後Base64にして返却*/
+    const request = await fetch(msg.body.url as string, {
+      method: "GET",
+      mode: "cors"
+    });
+    const image = await request.blob();
+    const fileReader = new FileReader();
+    fileReader.onload = async function() {
+      const dataURI = this.result;
+      const response = {
+        tag: "loadBase64",
+        body: dataURI
+      };
+      const activeTab = (await chromep.tabs.query({ active: true })) as Tab[];
+      const targetId = activeTab[0].id;
+      chrome.tabs.sendMessage(targetId, response);
+    };
+    fileReader.readAsDataURL(image);
   }
 });

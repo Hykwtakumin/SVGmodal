@@ -1,7 +1,12 @@
+export const getProjectName = (): string => {
+  const projectName = window.location.pathname.split("/")[1];
+  return projectName;
+};
+
 export const getPagesWithImage = (): Promise<any[]> => {
   return new Promise<any[]>(async (resolve, reject) => {
     const request = await fetch(
-      "https://scrapbox.io/api/pages/takumin-draft/",
+      `https://scrapbox.io/api/pages/${getProjectName()}/`,
       {
         method: "GET",
         credentials: "include",
@@ -16,7 +21,7 @@ export const getPagesWithImage = (): Promise<any[]> => {
     if (pages > 100) {
       /*ページ数が100以上の場合limitを指定した上で再度フェッチする*/
       const requestWithLimit = await fetch(
-        `https://scrapbox.io/api/pages/takumin-draft/?limit=${pages}`,
+        `https://scrapbox.io/api/pages/${getProjectName()}/?limit=${pages}`,
         {
           method: "GET",
           credentials: "include",

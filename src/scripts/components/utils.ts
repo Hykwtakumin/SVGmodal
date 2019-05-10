@@ -36,3 +36,23 @@ export type OpeStacks = {
   type: OpeType;
   desc: Object;
 };
+
+export const getBase64 = (src: string): Promise<string> => {
+  /*backGroundScriptにbase64リソースを取得させる*/
+  return new Promise((resolve, reject) => {
+    const request = {
+      tag: "getImg64",
+      body: {
+        url: src
+      }
+    };
+    chrome.runtime.sendMessage(request);
+    chrome.runtime.onMessage.addListener(
+      async (message, sender, sendResponse) => {
+        if (message.tag === "loadBase64" && message.body) {
+          resolve(message.body);
+        }
+      }
+    );
+  });
+};
