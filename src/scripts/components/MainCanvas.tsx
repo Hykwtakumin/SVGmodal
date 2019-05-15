@@ -100,7 +100,7 @@ export const MainCanvas = (
     const canvas = svgCanvas.current;
     //const image = await getBase64(importMap.image);
     const importedImage = addLusterImage(canvas, importMap);
-    console.dir(importedImage);
+    //console.dir(importedImage);
   };
 
   const download = () => {
