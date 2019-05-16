@@ -20,9 +20,11 @@
   "license": "MIT",
   "dependencies": {
     "@types/chrome": "^0.0.81",
+    "aws-sdk": "^2.456.0",
     "browserify": "^16.2.3",
     "chrome-promise": "^3.0.4",
     "debug": "^4.1.1",
+    "moment": "^2.24.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "typescript": "^3.4.2",

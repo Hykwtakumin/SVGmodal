@@ -1,6 +1,13 @@
 import chromep from "chrome-promise";
 import Tab = chrome.tabs.Tab;
 import { reloadExtension } from "./components/reloadExtension";
+import * as AWS from "aws-sdk";
+import {
+  ObjectKey,
+  Body,
+  ObjectCannedACL,
+  PutObjectRequest
+} from "aws-sdk/clients/s3";
 
 console.log("this is background");
 let isDrawingMode: boolean = false;
@@ -21,6 +28,52 @@ const startDrawing = async () => {
 const stopDrawing = async () => {
   await chromep.storage.local.set({ mode: false }).catch(e => console.log(e));
   chrome.browserAction.setBadgeText({ text: "" });
+};
+
+const upLoad2s3 = (data: any, fileName: string): Promise<boolean> => {
+  const albumBucketName = "";
+  const bucketRegion = "";
+  const IdentityPoolId = "";
+
+  AWS.config.update({
+    region: bucketRegion,
+    credentials: new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: IdentityPoolId
+    })
+  });
+
+  const s3 = new AWS.S3({
+    apiVersion: "2006-03-01",
+    params: { Bucket: albumBucketName }
+  });
+
+  const fileKey: ObjectKey = `${encodeURIComponent(
+    "HyperIllustCreator"
+  )}/${fileName}`;
+
+  const dataBody: Body = data;
+
+  const opiton: ObjectCannedACL = "public-read";
+
+  const reqObject = {
+    Key: fileKey,
+    Body: dataBody,
+    ContentType: "image/svg+xml",
+    ACL: opiton
+  } as PutObjectRequest;
+
+  return new Promise<boolean>((resolve, reject) => {
+    s3.upload(reqObject, (err, data) => {
+      if (err) {
+        console.dir(err);
+        resolve(false);
+      }
+      if (data) {
+        resolve(true);
+        console.dir(data);
+      }
+    });
+  });
 };
 
 //拡張機能のボタンを押すとお絵かきモードが起動
@@ -76,5 +129,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       chrome.tabs.sendMessage(targetId, response);
     };
     fileReader.readAsDataURL(image);
+  } else if (msg.tag === "upload2s3") {
+    const result = await upLoad2s3(msg.body, msg.name);
+    console.dir(result);
   }
 });

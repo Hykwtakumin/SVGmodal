@@ -13,6 +13,7 @@ import { PenWidthSelector } from "./PenWidthSelector";
 import { ColorPicker } from "./ColorPicker";
 import { ModeSelector } from "./ModeSelector";
 import { ImportPotal } from "./ImportPotal";
+import * as moment from "moment";
 
 interface MainCanvasProps {
   vbLeft: number;
@@ -38,6 +39,7 @@ export const MainCanvas = (
 
   let isDragging: boolean = false;
   let lastPath;
+  let lastElm;
   const svgCanvas = useRef(null);
 
   /*on Canvas Resize*/
@@ -67,23 +69,41 @@ export const MainCanvas = (
   const handleDown = (event: React.SyntheticEvent<HTMLElement>) => {
     event.persist();
     isDragging = true;
-    const canvas = svgCanvas.current;
-    const point: Points = getPoint(event.pageX, event.pageY, canvas);
-    lastPath = addPath(canvas, point);
-    lastPath.setAttribute("stroke", color);
-    lastPath.setAttribute("stroke-width", `${penWidth}`);
-    lastPath.classList.add("current-path");
+    if (editorMode === "draw") {
+      const canvas = svgCanvas.current;
+      const point: Points = getPoint(event.pageX, event.pageY, canvas);
+      lastPath = addPath(canvas, point);
+      lastPath.setAttribute("stroke", color);
+      lastPath.setAttribute("stroke-width", `${penWidth}`);
+      lastPath.classList.add("current-path");
+    } else if (editorMode === "edit") {
+      console.dir(event.target);
+      lastElm = event.target;
+    }
   };
 
   const handleMove = (event: React.SyntheticEvent<HTMLElement>) => {
     //event.persist();
     if (isDragging) {
-      if (lastPath) {
-        const canvas = svgCanvas.current;
-        const point: Points = getPoint(event.pageX, event.pageY, canvas);
-        updatePath(lastPath, point);
-      } else {
-        console.log("something went wrong");
+      if (editorMode === "draw") {
+        if (lastPath) {
+          const canvas = svgCanvas.current;
+          const point: Points = getPoint(event.pageX, event.pageY, canvas);
+          updatePath(lastPath, point);
+        } else {
+          console.log("something went wrong");
+        }
+      } else if (editorMode === "edit") {
+        if (lastElm) {
+          const canvas = svgCanvas.current;
+          const point: Points = getPoint(event.pageX, event.pageY, canvas);
+          //lastElm.setAttributeNS(null, "x", point.x.toString());
+          //lastElm.setAttributeNS(null, "y", point.y.toString());
+          lastElm.setAttribute("x", `${point.x}`);
+          lastElm.setAttribute("y", `${point.y}`);
+        } else {
+          console.log("something went wrong");
+        }
       }
     }
   };
@@ -91,8 +111,11 @@ export const MainCanvas = (
   const handleUp = (event: React.SyntheticEvent<HTMLElement>) => {
     //event.persist();
     isDragging = false;
-    lastPath.classList.remove("current-path");
-    lastPath = null;
+    if (editorMode === "draw") {
+      lastPath.classList.remove("current-path");
+      lastPath = null;
+    } else if (editorMode === "edit") {
+    }
   };
 
   const handleImportImage = async (importMap: TitleImageMap) => {
@@ -104,8 +127,8 @@ export const MainCanvas = (
   };
 
   const download = () => {
-    const fileName = "hyperillust.svg";
-
+    const now = moment().format("YYYY-MM-DD-HH-mm-ss");
+    const fileName = `hyperillust_${now}_.svg`;
     const blobObject: Blob = new Blob(
       [new XMLSerializer().serializeToString(svgCanvas.current)],
       { type: "image/svg+xml;charset=utf-8" }
@@ -117,6 +140,30 @@ export const MainCanvas = (
     dlLink.setAttribute("target", "_blank");
     dlLink.setAttribute("download", fileName);
     dlLink.click();
+  };
+
+  const handleUpload = () => {
+    console.log("upload button clicked!");
+    const now = moment().format("YYYY-MM-DD-HH-mm-ss");
+    const fileName = `hyperillust_${now}_.svg`;
+    const blobObject: Blob = new Blob(
+      [new XMLSerializer().serializeToString(svgCanvas.current)],
+      { type: "image/svg+xml;charset=utf-8" }
+    );
+    console.dir(blobObject);
+    const request = {
+      tag: "upload2s3",
+      body: blobObject,
+      name: fileName
+    };
+    chrome.runtime.sendMessage(request);
+    chrome.runtime.onMessage.addListener(
+      async (message, sender, sendResponse) => {
+        if (message.tag === "uploaded") {
+          alert("アップロードに成功しました!");
+        }
+      }
+    );
   };
 
   return (
@@ -152,6 +199,8 @@ export const MainCanvas = (
             ref={svgCanvas}
             className={"svgCanvas"}
             viewBox={`${vbLeft} ${vbTop} ${vbRight} ${vbBottom}`}
+            width={`${vbRight}`}
+            height={`${vbBottom}`}
             xmlns="http://www.w3.org/2000/svg"
             xmlnsXlink="http://www.w3.org/1999/xlink"
           >
