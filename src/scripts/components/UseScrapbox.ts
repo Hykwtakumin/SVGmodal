@@ -3,6 +3,10 @@ export const getProjectName = (): string => {
   return projectName;
 };
 
+export const getFullProjectPath = (): string => {
+  return `${window.location.origin}/${window.location.pathname.split("/")[1]}/`;
+};
+
 export const getPagesWithImage = (): Promise<any[]> => {
   return new Promise<any[]>(async (resolve, reject) => {
     const request = await fetch(

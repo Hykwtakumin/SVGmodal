@@ -1,4 +1,5 @@
 import { Points, TitleImageMap } from "./utils";
+import { getFullProjectPath } from "./UseScrapbox";
 
 export const addPath = (canvas: SVGElement, point: Points): SVGPathElement => {
   const pathElm: SVGPathElement = document.createElementNS(
@@ -29,7 +30,10 @@ export const addLusterImage = (
     "a"
   );
 
-  ankerElm.setAttribute("xlink:href", `./${importMap.title}`);
+  ankerElm.setAttribute(
+    "xlink:href",
+    `${getFullProjectPath()}${importMap.title}`
+  );
   ankerElm.setAttribute("target", "_blank");
 
   const imgElm = document.createElement("img");
@@ -42,36 +46,8 @@ export const addLusterImage = (
   foreign.setAttribute("width", `${imgElm.width}`);
   foreign.setAttribute("height", `${imgElm.height}`);
   foreign.style.backgroundImage = `url(` + importMap.image + `)`;
-  //foreign.innerText = "this is foreign Object";
-
-  // foreign.addEventListener("click", () => {
-  //   alert("foreign object is clicked!");
-  // });
 
   imgElm.remove();
-
-  // const div = document.createElement("div");
-  // div.setAttributeNS(null, "xmlns", "http://www.w3.org/1999/xhtml");
-
-  // const svgImg = document.createElementNS(
-  //   "http://www.w3.org/2000/svg",
-  //   "image"
-  // );
-  // svgImg.setAttribute("x", "0");
-  // svgImg.setAttribute("y", "0");
-  // svgImg.setAttribute("width", "250");
-  // svgImg.setAttribute("height", "250");
-  // svgImg.setAttribute(
-  //   "xlink:href",
-  //   "https://i.gyazo.com/74e7862bd1d8ad608b059d1c44f3b08f.png"
-  // );
-
-  // const img = document.createElement("img");
-  // img.src = importMap.image;
-  // div.appendChild(img);
-  //foreign.appendChild(div);
-
-  //foreign.appendChild(svgImg);
 
   ankerElm.appendChild(foreign);
   canvas.appendChild(ankerElm);
