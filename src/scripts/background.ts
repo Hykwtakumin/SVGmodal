@@ -30,50 +30,59 @@ const stopDrawing = async () => {
   chrome.browserAction.setBadgeText({ text: "" });
 };
 
-const upLoad2s3 = (data: any, fileName: string): Promise<boolean> => {
-  const albumBucketName = "";
-  const bucketRegion = "";
-  const IdentityPoolId = "";
+// const upLoad2s3 = (data: any, fileName: string): Promise<boolean> => {
+//   const albumBucketName = "";
+//   const bucketRegion = "";
+//   const IdentityPoolId = "";
 
-  AWS.config.update({
-    region: bucketRegion,
-    credentials: new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: IdentityPoolId
-    })
-  });
+//   AWS.config.update({
+//     region: bucketRegion,
+//     credentials: new AWS.CognitoIdentityCredentials({
+//       IdentityPoolId: IdentityPoolId
+//     })
+//   });
 
-  const s3 = new AWS.S3({
-    apiVersion: "2006-03-01",
-    params: { Bucket: albumBucketName }
-  });
+//   const s3 = new AWS.S3({
+//     apiVersion: "2006-03-01",
+//     params: { Bucket: albumBucketName }
+//   });
 
-  const fileKey: ObjectKey = `${encodeURIComponent(
-    "HyperIllustCreator"
-  )}/${fileName}`;
+//   const fileKey: ObjectKey = `${encodeURIComponent(
+//     "HyperIllustCreator"
+//   )}/${fileName}`;
 
-  const dataBody: Body = data;
+//   const dataBody: Body = data;
 
-  const opiton: ObjectCannedACL = "public-read";
+//   const opiton: ObjectCannedACL = "public-read";
 
-  const reqObject = {
-    Key: fileKey,
-    Body: dataBody,
-    ContentType: "image/svg+xml",
-    ACL: opiton
-  } as PutObjectRequest;
+//   const reqObject = {
+//     Key: fileKey,
+//     Body: dataBody,
+//     ContentType: "image/svg+xml",
+//     ACL: opiton
+//   } as PutObjectRequest;
 
-  return new Promise<boolean>((resolve, reject) => {
-    s3.upload(reqObject, (err, data) => {
-      if (err) {
-        console.dir(err);
-        resolve(false);
-      }
-      if (data) {
-        resolve(true);
-        console.dir(data);
-      }
-    });
-  });
+//   return new Promise<boolean>((resolve, reject) => {
+//     s3.upload(reqObject, (err, data) => {
+//       if (err) {
+//         console.dir(err);
+//         resolve(false);
+//       }
+//       if (data) {
+//         resolve(true);
+//         console.dir(data);
+//       }
+//     });
+//   });
+// };
+
+const upload = async (data: any, fileName: string) => {
+  const request = await fetch(
+    `https://hyper-illust-creator.herokuapp.com/upload/${fileName}`,
+    { method: "POST", body: data, mode: "cors" }
+  );
+  const response = await request.json();
+  console.dir(response);
 };
 
 //拡張機能のボタンを押すとお絵かきモードが起動
@@ -112,25 +121,43 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     chrome.tabs.sendMessage(targetId, response);
   } else if (msg.tag === "getImg64") {
     /*取得後Base64にして返却*/
-    const request = await fetch(msg.body.url as string, {
-      method: "GET",
-      mode: "cors"
-    });
-    const image = await request.blob();
-    const fileReader = new FileReader();
-    fileReader.onload = async function() {
-      const dataURI = this.result;
-      const response = {
-        tag: "loadBase64",
-        body: dataURI
-      };
-      const activeTab = (await chromep.tabs.query({ active: true })) as Tab[];
-      const targetId = activeTab[0].id;
-      chrome.tabs.sendMessage(targetId, response);
+    const request = await fetch(
+      `http://127.0.0.1:3000/proxy/${encodeURI(msg.body.url)}` as string,
+      {
+        method: "GET",
+        mode: "cors"
+      }
+    );
+    const image = await request.json();
+
+    const data = image.data;
+    console.dir(data);
+
+    const response = {
+      tag: "loadBase64",
+      body: data
     };
-    fileReader.readAsDataURL(image);
+    const activeTab = (await chromep.tabs.query({ active: true })) as Tab[];
+    const targetId = activeTab[0].id;
+    chrome.tabs.sendMessage(targetId, response);
+
+    // const fileReader = new FileReader();
+    // fileReader.onload = async function() {
+    //   const dataURI = this.result;
+    //   const response = {
+    //     tag: "loadBase64",
+    //     body: dataURI
+    //   };
+    //   const activeTab = (await chromep.tabs.query({ active: true })) as Tab[];
+    //   const targetId = activeTab[0].id;
+    //   chrome.tabs.sendMessage(targetId, response);
+    // };
+    // fileReader.readAsDataURL(image);
   } else if (msg.tag === "upload2s3") {
-    const result = await upLoad2s3(msg.body, msg.name);
+    //const result = await upLoad2s3(msg.body, msg.name);
+    //console.dir(result);
+  } else if (msg.tag === "upload") {
+    const result = await upload(msg.body, msg.name);
     console.dir(result);
   }
 });

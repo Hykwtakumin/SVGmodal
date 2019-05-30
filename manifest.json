@@ -1,7 +1,7 @@
 {
-  "name": "SVGmodal",
+  "name": "SVGCanvasModal",
   "version": "0.0.5",
-  "description": "browser extension that improves SVG usage",
+  "description": "browser extension that improves SVG usage in scrapbox",
   "icons": {
     "128": "icons/resizedImage.png"
   },

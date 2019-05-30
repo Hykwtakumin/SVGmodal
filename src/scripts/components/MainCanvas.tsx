@@ -152,7 +152,7 @@ export const MainCanvas = (
     );
     console.dir(blobObject);
     const request = {
-      tag: "upload2s3",
+      tag: "upload",
       body: blobObject,
       name: fileName
     };
@@ -182,9 +182,15 @@ export const MainCanvas = (
           <span>100%</span>
           <input
             type={"button"}
+            value={"DL"}
+            className={"hicButton toolButton"}
+            onPointerDown={download}
+          />
+          <input
+            type={"button"}
             value={"Upload"}
             className={"hicButton toolButton leftButton"}
-            onPointerDown={download}
+            onPointerDown={handleUpload}
           />
         </div>
 
